@@ -10,49 +10,72 @@ import (
 //go:embed input.txt
 var input string
 
-func findBiggestRation(input string, num uint) int {
-	lines := strings.Split(input, "\n")
+func main() {
+	fmt.Println("Solution 1: ", part1(input))
+	fmt.Println("Solution 2: ", part2(input))
+}
+
+func part1(input string) int {
+	return findBiggestRations(input, 1)
+}
+
+func part2(input string) int {
+	return findBiggestRations(input, 3)
+}
+
+func findBiggestRations(input string, num uint) int {
+	rations := splitIntoRations(input)
 	var biggestRations = make([]int, num)
 	var currentRation int
 
+	for _, ration := range rations {
+		currentRation = addSnacksInRation(ration)
+		biggestRations = insertRationIntoBiggestRations(currentRation, biggestRations)
+	}
+
+	return addSnacksInRation(biggestRations)
+}
+
+func splitIntoRations(input string) [][]int {
+	var rations [][]int
+	lines := strings.Split(input, "\n")
+	var currentRation []int
+
 	for i, line := range lines {
 		if line == "" {
+			rations = append(rations, currentRation)
+			currentRation = []int{}
 			continue
 		}
 
-		intVal, _ := strconv.Atoi(line)
-		currentRation += intVal
+		intValue, _ := strconv.Atoi(line)
+		currentRation = append(currentRation, intValue)
 
-		if i == len(lines)-1 || lines[i+1] == "" {
-			for pos, v := range biggestRations {
-				if currentRation > v {
-					previousRation := biggestRations[pos]
-					biggestRations[pos] = currentRation
-					currentRation = previousRation
-				}
-			}
-			currentRation = 0
+		if i == len(lines)-1 {
+			rations = append(rations, currentRation)
 		}
-
 	}
 
+	return rations
+}
+
+func addSnacksInRation(ration []int) int {
 	var total int
-	for _, v := range biggestRations {
-		total += v
+	for _, snack := range ration {
+		total += snack
 	}
 
 	return total
 }
 
-func part1(input string) int {
-	return findBiggestRation(input, 1)
-}
+func insertRationIntoBiggestRations(ration int, biggestRations []int) []int {
+	for i, v := range biggestRations {
+		if ration > v {
+			prev := biggestRations[i]
+			biggestRations[i] = ration
+			ration = prev
+		}
+	}
 
-func part2(input string) int {
-	return findBiggestRation(input, 3)
-}
-
-func main() {
-	fmt.Println("Solution 1: ", part1(input))
-	fmt.Println("Solution 2: ", part2(input))
+	return biggestRations
 }
