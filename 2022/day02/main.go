@@ -80,13 +80,12 @@ func calculateScorePart(input string, strat Strategy) int {
 
 func scoreBySymbol(oponentSymbol Symbol, mySymbol Symbol) int {
 	value := symbolValue[mySymbol]
-
 	if oponentSymbol == mySymbol {
 		return 3 + value
-	} else if oponentSymbol == Rock && mySymbol == Scissors || oponentSymbol == Paper && mySymbol == Rock || oponentSymbol == Scissors && mySymbol == Paper {
-		return value
-	} else {
+	} else if (oponentSymbol+1)%3 == mySymbol {
 		return 6 + value
+	} else {
+		return value
 	}
 }
 
