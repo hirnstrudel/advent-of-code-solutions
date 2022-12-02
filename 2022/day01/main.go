@@ -25,7 +25,7 @@ func part2(input string) int {
 
 func findBiggestRations(input string, num uint) int {
 	rations := splitIntoRations(input)
-	var biggestRations = make([]int, num)
+	biggestRations := make([]int, num)
 	var currentRation int
 
 	for _, ration := range rations {
